@@ -5,7 +5,6 @@
             var n1 = document.getElementById('firstnum').value.toString();
             var n2 = document.getElementById('secondnum').value.toString();
             var printer = document.getElementById('output');
-            var step = 0;
 
             printer.innerHTML = "";
             printer.innerHTML += "Multiplying: " + n1 + " * " + n2 + "<br><br>";
@@ -25,7 +24,6 @@
                     return res;
                 }
                 else {
-                    step += 1;
                     var n = n1.length;
                     var m = Math.ceil(n/2);
 
@@ -37,7 +35,7 @@
                     var m1 = (parseInt(l1) + parseInt(r1)).toString();
                     var m2 = (parseInt(l2) + parseInt(r2)).toString();
 
-                    printer.innerHTML += genTabs(depth) + step + ". Split numbers in half: [" + n1 + " -> " + l1 + " " + r1 + "], [" + n2 + " -> " + l2 + " " + r2 + "]<br>";
+                    printer.innerHTML += genTabs(depth) + "Split numbers in half: [" + n1 + " -> " + l1 + " " + r1 + "], [" + n2 + " -> " + l2 + " " + r2 + "]<br>";
 
                     printer.innerHTML += genTabs(depth + 1) + "Multiply both left sides: " + l1 + " * " + l2 + "<br>";
                     var left = recurse(l1, l2, depth + 2);
