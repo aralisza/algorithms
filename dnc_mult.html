@@ -1,0 +1,101 @@
+<html>
+    <head>
+    <script>
+        function dncMult() {
+            var n1 = document.getElementById('firstnum').value.toString();
+            var n2 = document.getElementById('secondnum').value.toString();
+            var printer = document.getElementById('output');
+            var step = 0;
+
+            printer.innerHTML = "";
+            printer.innerHTML += "Multiplying: " + n1 + " * " + n2 + "<br><br>";
+
+            function recurse(n1, n2, depth) {
+                if (n1.length > n2.length) {
+                    printer.innerHTML += genTabs(depth) + "Reformatting numbers: length of n1 > length of n2 (" + n1 + " * " + n2 + ")<br><br>"
+                    return recurse(n1, "0".concat(n2), depth);
+                }
+                else if (n1.length < n2.length) {
+                    printer.innerHTML += genTabs(depth) + "Reformatting numbers: length of n1 < length of n2 (" + n1 + " * " + n2 + ")<br><br>"
+                    return recurse("0".concat(n1), n2, depth);
+                }
+                else if (n1.length <= 1) {
+                    step += 1;
+                    var res = parseInt(n1) * parseInt(n2);
+                    printer.innerHTML += genTabs(depth) + step + ". Reached base case: " + n1 + " * " + n2 + " = " + res + "<br><br>";
+                    return res;
+                }
+                else {
+                    step += 1;
+                    var n = n1.length;
+                    var m = Math.ceil(n/2);
+
+                    var l1 = n1.substring(0, m);
+                    var l2 = n2.substring(0, m);
+                    var r1 = n1.substring(m, n);
+                    var r2 = n2.substring(m, n);
+
+                    var m1 = (parseInt(l1) + parseInt(r1)).toString();
+                    var m2 = (parseInt(l2) + parseInt(r2)).toString();
+
+                    printer.innerHTML += genTabs(depth) + step + ". Split numbers in half: [" + n1 + " -> " + l1 + " " + r1 + "], [" + n2 + " -> " + l2 + " " + r2 + "]<br>";
+
+                    printer.innerHTML += genTabs(depth + 1) + "Multiply both left sides: " + l1 + " * " + l2 + "<br>";
+                    var left = recurse(l1, l2, depth + 2);
+                    printer.innerHTML += genTabs(depth + 1) + "Multiply both right sides: " + r1 + " * " + r2 + "<br>";
+                    var right = recurse(r1, r2, depth + 2);
+                    printer.innerHTML += genTabs(depth + 1) + "Multiply the sums of the sides: (" + l1 + "+" + r1 + ") * (" + l2 + "+" + r2 + ")<br>";
+                    var mid = recurse(m1, m2, depth + 2);
+
+                    var res = left * Math.pow(10, n) + (mid - left - right) * Math.pow(10, m) + right;
+
+                    printer.innerHTML += genTabs(depth + 1) + "Add the components: " + left + " * 10^" + n + " + (" + mid + " - " + left + " - " + right + ") * 10^" + m + " + " + right + " = " + res + "<br><br>";
+                    return res;
+                }
+            }
+            var res = recurse(n1, n2, 0);
+            printer.innerHTML += "Result: " + res;
+        }
+
+        function genTabs(depth) {
+            var ret = "";
+            for (var i = 0; i < depth; i++) {
+                ret += "<span class='tab'></span>";
+            }
+
+            return ret;
+        }
+    </script>
+
+    <style>
+        .tab {
+            margin-left: 2em;
+            position: relative;
+            border: 1px dotted #ccc;
+        }
+
+        #input {
+            float: left;
+        }
+
+        #output {
+            display: inline-block;
+            margin-left: 50px;
+        }
+    </style>
+
+    </head>
+
+    <body>
+        <h1>Divide and Conquer Multiplying</h1>
+        <div id="input">
+            First number: <br>
+            <input type="number" id="firstnum"><br>
+            Second number: <br>
+            <input type="number" id="secondnum"><br>
+            <button type="button" onclick="dncMult()">Calculate</button>
+        </div>
+
+        <div id="output"></div>
+    </body>
+</html>
