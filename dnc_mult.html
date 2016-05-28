@@ -20,9 +20,8 @@
                     return recurse("0".concat(n1), n2, depth);
                 }
                 else if (n1.length <= 1) {
-                    step += 1;
                     var res = parseInt(n1) * parseInt(n2);
-                    printer.innerHTML += genTabs(depth) + step + ". Reached base case: " + n1 + " * " + n2 + " = " + res + "<br><br>";
+                    printer.innerHTML += genTabs(depth) + "Reached base case: " + n1 + " * " + n2 + " = " + res + "<br><br>";
                     return res;
                 }
                 else {
