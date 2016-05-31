@@ -38,11 +38,13 @@
                     printer.innerHTML += genTabs(depth) + "Split numbers in half: [" + n1 + " -> " + l1 + " " + r1 + "], [" + n2 + " -> " + l2 + " " + r2 + "]<br>";
 
                     printer.innerHTML += genTabs(depth + 1) + "Multiply both left sides: " + l1 + " * " + l2 + "<br>";
-                    var left = recurse(l1, l2, depth + 2);
+                    var left = parseInt(recurse(l1, l2, depth + 2));
+
                     printer.innerHTML += genTabs(depth + 1) + "Multiply both right sides: " + r1 + " * " + r2 + "<br>";
-                    var right = recurse(r1, r2, depth + 2);
+                    var right = parseInt(recurse(r1, r2, depth + 2));
+
                     printer.innerHTML += genTabs(depth + 1) + "Multiply the sums of the sides: (" + l1 + "+" + r1 + ") * (" + l2 + "+" + r2 + ")<br>";
-                    var mid = recurse(m1, m2, depth + 2);
+                    var mid = parseInt(recurse(m1, m2, depth + 2));
 
                     var res = left * Math.pow(10, n) + (mid - left - right) * Math.pow(10, m) + right;
 
