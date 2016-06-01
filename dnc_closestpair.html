@@ -25,7 +25,7 @@
                 var printer = document.getElementById('output');
 
                 var res = [Number.MAX_SAFE_INTEGER]
-                
+
                 for (var i = 0; i < pairs.length; i++) {
                     if (res[0] > pairs[i][0]) {
                         res = pairs[i];
@@ -83,7 +83,7 @@
                         var split2 = medianSplit(pairs);
                         var dleft = closest(split2[0]);
                         var dright = closest(split2[1]);
-                        var dmid = closest([split2[0][split2[0].lengthNumber.MAX_SAFE_INTEGER],
+                        var dmid = closest([split2[0][split2[0].length-1],
                             split2[1][0]]);
 
                         return minPair([dleft, dright, dmid]);
