@@ -5,57 +5,40 @@
                 return a - b;
             }
 
-            function oneD() {
-                var s = document.getElementById('oneD').value;
-                var vals = s.split("\n").map(Number).filter(Boolean);
+            function sortPairY(a, b) {
+                return a[1] - b[1];
+            }
 
+            function sortPairX(a, b) {
+                return a[0] - b[0];
+            }
+
+            function pairToString(currentValue, index, arr) {
+                return "(" + currentValue[0] + ", " + currentValue[1] + ")";
+            }
+
+            function isPair(value) {
+                return value.length == 2 && Number(value[0]) && Number(value[1]);
+            }
+
+            function minPair(pairs) {
                 var printer = document.getElementById('output');
-                printer.innerHTML = "";
 
-                printer.innerHTML += "Getting closest pairs of: "
-                    + vals.toString() + "<br>";
-
-                vals.sort(sortNumber);
-                printer.innerHTML += "Sorted: " + vals.toString() + "<br>";
-
-                function minPair(pairs) {
-                    function min2(previousValue, currentValue, currentIndex, array) {
-                        if (previousValue[0] == -1 || previousValue[0] > currentValue[0]) {
-                            return currentValue;
-                        }
-                        else {
-                            return previousValue;
-                        }
+                var res = [Number.MAX_SAFE_INTEGER]
+                
+                for (var i = 0; i < pairs.length; i++) {
+                    if (res[0] > pairs[i][0]) {
+                        res = pairs[i];
                     }
-
-                    var res = pairs.reduce(min2);
-                    printer.innerHTML += "Min pair of " + pairs.toString() + " -> " + res.toString() + "<br>";
-
-                    return res;
                 }
 
-                function closest(pairs) {
-                    if (pairs.length == 1) {
-                        return [-1, pairs];
-                    }
-                    else if (pairs.length == 2) {
-                        return [Math.abs(pairs[1] - pairs[0]), pairs];
-                    }
-                    else {
-                        var split2 = medianSplit(pairs);
-                        var dleft = closest(split2[0]);
-                        var dright = closest(split2[1]);
-                        var dmid = closest([split2[0][split2[0].length-1],
-                            split2[1][0]]);
+                printer.innerHTML += "Min pair of " + pairs.toString() + " -> " + res.toString() + "<br>";
 
-                        return minPair([dleft, dright, dmid]);
-                    }
+                return res;
+            }
 
-                }
-
-                var res = closest(vals);
-                printer.innerHTML += "Closest pair: " + res[1].toString() + " with a distance of: " + res[0].toString() + "<br>";
-
+            function commaSplit(currentValue, index, arr) {
+                return currentValue.split(",").map(Number)
             }
 
             function medianSplit(array) {
@@ -71,6 +54,125 @@
                 return [left, right];
             }
 
+            function xyDist(a, b) {
+                var res = Math.sqrt(Math.pow(a[0] - b[0], 2) + Math.pow(a[1] - b[1], 2));
+                return res;
+            }
+
+            function oneD() {
+                var s = document.getElementById('oneD').value;
+                var vals = s.split("\n").map(Number).filter(Boolean);
+
+                var printer = document.getElementById('output');
+                printer.innerHTML = "";
+
+                printer.innerHTML += "Getting closest pairs of: "
+                    + vals.toString() + "<br>";
+
+                vals.sort(sortNumber);
+                printer.innerHTML += "Sorted: " + vals.toString() + "<br>";
+
+                function closest(pairs) {
+                    if (pairs.length == 1) {
+                        return [Number.MAX_SAFE_INTEGER, pairs];
+                    }
+                    else if (pairs.length == 2) {
+                        return [Math.abs(pairs[1] - pairs[0]), pairs];
+                    }
+                    else {
+                        var split2 = medianSplit(pairs);
+                        var dleft = closest(split2[0]);
+                        var dright = closest(split2[1]);
+                        var dmid = closest([split2[0][split2[0].lengthNumber.MAX_SAFE_INTEGER],
+                            split2[1][0]]);
+
+                        return minPair([dleft, dright, dmid]);
+                    }
+
+                }
+
+                var res = closest(vals);
+                printer.innerHTML += "Closest pair: " + res[1].toString() + " with a distance of: " + res[0].toString() + "<br>";
+
+            }
+
+            function twoD() {
+                var s = document.getElementById('twoD').value;
+                var v = s.split("\n");
+                var vals = v.map(commaSplit).filter(isPair);
+
+                var printer = document.getElementById('output');
+                printer.innerHTML = "";
+
+                printer.innerHTML += "Getting closest pairs of: "
+                    + vals.map(pairToString).toString() + "<br>";
+
+                vals.sort(sortPairX);
+                printer.innerHTML += "Sorted by X: " + vals.map(pairToString).toString() + "<br>";
+
+                function select(pairs, delta, median) {
+                    function selectorX(pair) {
+                        return Math.abs(pair[0] - median) <= delta;
+                    }
+
+                    return pairs.filter(selectorX).sort(sortPairY);
+                }
+
+                function closestMiddle(left, right, delta) {
+                    var min = delta;
+                    var ret = [Number.MAX_SAFE_INTEGER];
+
+                    for (var i = 0; i < left.length; i++) {
+                        var point = left[i];
+
+                        var checkRight = right.filter(function (value) {
+                            return Math.abs(point[1] - value[1]) <= delta;
+                        });
+
+                        checkRight.map(function (currentValue, index, arr) {
+                            var dist = xyDist(point, currentValue);
+                            if (dist < min) {
+                                min = dist;
+                                ret = [dist, [point, currentValue]];
+                            }
+                        });
+                    }
+
+                    return ret;
+                }
+
+                function closest(pairs) {
+                    if (pairs.length == 1) {
+                        return [Number.MAX_SAFE_INTEGER, pairs];
+                    }
+                    else if (pairs.length == 2) {
+                        return [xyDist(pairs[0], pairs[1]), pairs];
+                    }
+                    else {
+                        var l = pairs.length;
+
+                        var mid = Math.floor(l/2);
+                        var left = pairs.slice(0, mid);
+                        var right = pairs.slice(mid, l);
+                        printer.innerHTML += "Slice " + pairs.toString() + " -> " + left.toString() + " " + right.toString() + "<br>";
+
+                        var dleft = closest(left);
+                        var dright = closest(right);
+
+                        var delta = minPair([dleft, dright])[0];
+
+                        var ql = select(left, delta, pairs[mid][0]);
+                        var qr = select(right, delta, pairs[mid][0]);
+
+                        var dmid = closestMiddle(ql, qr, delta);
+
+                        return minPair([dleft, dright, dmid]);
+                    }
+                }
+
+                var res = closest(vals);
+                printer.innerHTML += "Closest pair: " + res[1].map(pairToString).toString() + " with a distance of: " + res[0].toString() + "<br>";
+            }
         </script>
 
         <style>
