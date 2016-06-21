@@ -1,0 +1,77 @@
+<html>
+    <head>
+    <script>
+        function median() {
+            var printer = document.getElementById('output');
+            var s1 = document.getElementById('firstnum').value;
+            var s2 = document.getElementById('secondnum').value;
+
+            var nums1 = s1.split(" ").map(Number);
+            var nums2 = s2.split(" ").map(Number);
+
+            var len1 = nums1.length;
+            var len2 = nums2.length;
+            var med1 = nums1[Math.floor(len1/2 - 0.01)];
+            var med2 = nums2[Math.floor(len2/2 - 0.01)];
+
+            function getMed(a1, a2){
+                if (a1.length == 2 && a2.length == 2) {
+                    return (Math.max(a1[0], a2[0]) + Math.min(a1[1], a2[1]))/2;
+                }
+                else {
+                    var mid1 = Math.floor(a1.length/2);
+                    var mid2 = Math.floor(a2.length/2);
+
+                    var med1 = a1[mid1];
+                    var med2 = a2[mid2];
+
+                    if (med1 == med2) {
+                        return med1;
+                    }
+                    else if (med1 > med2) {
+                        if (a1.length % 2 == 0) {
+                            return getMed(a1.slice(0, mid1+1), a2.slice(mid2 - 1, a2.length));
+                        }
+                        return getMed(a1.slice(0, mid1+1), a2.slice(mid2, a2.length));
+                    }
+                    else {
+                        if (a1.length % 2 == 0) {
+                            return getMed(a2.slice(0, mid2+1), a1.slice(mid1 - 1, a1.length));
+                        }
+                        return getMed(a2.slice(0, mid2+1), a1.slice(mid1, a1.length))
+                    }
+                }
+            }
+
+            var med = getMed(nums1, nums2);
+            printer.innerHTML = "The median of (" + s1 + ") and ( "
+                 + s2 + " ) is " + med + "<br>";
+        }
+    </script>
+
+    <style>
+        #input {
+            float: left;
+        }
+
+        #output {
+            display: inline-block;
+            margin-left: 50px;
+        }
+    </style>
+
+    </head>
+
+    <body>
+        <h1>Median of two sorted arrays of n length</h1>
+        <div id='input'>
+            First array: <br>
+            <input type='text' id='firstnum' value='1 4 6 8 9 10 34 76'><br>
+            Second array: <br>
+            <input type='text' id='secondnum' value='3 5 6 10 23 34 45 56'><br>
+            <button type='button' onclick='median()'>Calculate</button>
+        </div>
+
+        <div id='output'></div>
+    </body>
+</html>
